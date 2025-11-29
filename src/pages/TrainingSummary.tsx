@@ -249,13 +249,13 @@ const TrainingSummary = () => {
                 )}
                 <div>
                   <span className="text-muted-foreground">Konfiguracja:</span>
-                  <p className="font-medium">
+                  <div className="mt-1">
                     <Badge variant="outline">
                       {session.config.isPreset
                         ? `Preset: ${session.config.presetName}`
                         : "Własna konfiguracja"}
                     </Badge>
-                  </p>
+                  </div>
                 </div>
               </div>
             </CardContent>

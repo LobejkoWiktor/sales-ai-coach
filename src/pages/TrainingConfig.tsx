@@ -162,12 +162,12 @@ const TrainingConfig = () => {
                 <Label htmlFor="goal" className="text-base">
                   Cel rozmowy (opcjonalnie)
                 </Label>
-                <Select value={goal || ""} onValueChange={(v) => setGoal(v as ConversationGoal || undefined)}>
+                <Select value={goal || "none"} onValueChange={(v) => setGoal(v === "none" ? undefined : v as ConversationGoal)}>
                   <SelectTrigger id="goal">
                     <SelectValue placeholder="Wybierz cel..." />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="">Brak celu</SelectItem>
+                    <SelectItem value="none">Brak celu</SelectItem>
                     {Object.entries(goalLabels).map(([value, label]) => (
                       <SelectItem key={value} value={value}>
                         {label}
