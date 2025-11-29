@@ -1,4 +1,5 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { useSpeechRecognition } from "@/hooks/useSpeechRecognition";
 import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import {
@@ -43,9 +44,21 @@ const Conversation = () => {
     },
   ]);
   const [input, setInput] = useState("");
-  const [isRecording, setIsRecording] = useState(false);
+  const {
+    isListening,
+    transcript,
+    startListening,
+    stopListening,
+    resetTranscript,
+  } = useSpeechRecognition();
   const [isSpeaking, setIsSpeaking] = useState(false);
   const [progress, setProgress] = useState(15);
+
+  useEffect(() => {
+    if (transcript) {
+      setInput(transcript);
+    }
+  }, [transcript]);
 
   if (!config) {
     navigate("/offers");
@@ -72,6 +85,7 @@ const Conversation = () => {
 
     setMessages([...messages, newMessage]);
     setInput("");
+    resetTranscript();
     setProgress(Math.min(progress + 10, 85));
 
     setTimeout(() => {
@@ -140,12 +154,12 @@ const Conversation = () => {
           <div className="border-b border-border bg-card px-4 py-3">
             <div className="flex items-center justify-center gap-4">
               <Button
-                variant={isRecording ? "destructive" : "default"}
+                variant={isListening ? "destructive" : "default"}
                 size="lg"
-                onClick={() => setIsRecording(!isRecording)}
+                onClick={isListening ? stopListening : startListening}
                 className="gap-2"
               >
-                {isRecording ? (
+                {isListening ? (
                   <>
                     <MicOff className="w-5 h-5" />
                     Zatrzymaj nagrywanie
@@ -162,7 +176,7 @@ const Conversation = () => {
                   <span className="text-primary font-medium">
                     🎤 Klient mówi...
                   </span>
-                ) : isRecording ? (
+                ) : isListening ? (
                   <span className="text-accent font-medium">
                     🎙️ Słucham Twojej odpowiedzi...
                   </span>
@@ -177,16 +191,14 @@ const Conversation = () => {
             {messages.map((message) => (
               <div
                 key={message.id}
-                className={`flex ${
-                  message.role === "rep" ? "justify-end" : "justify-start"
-                }`}
+                className={`flex ${message.role === "rep" ? "justify-end" : "justify-start"
+                  }`}
               >
                 <div
-                  className={`max-w-[80%] p-4 rounded-2xl ${
-                    message.role === "rep"
-                      ? "bg-primary text-primary-foreground"
-                      : "bg-card border border-border"
-                  }`}
+                  className={`max-w-[80%] p-4 rounded-2xl ${message.role === "rep"
+                    ? "bg-primary text-primary-foreground"
+                    : "bg-card border border-border"
+                    }`}
                 >
                   <div className="flex items-center gap-2 mb-1">
                     <span className="text-xs font-medium opacity-80">

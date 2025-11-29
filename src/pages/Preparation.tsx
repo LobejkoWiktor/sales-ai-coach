@@ -1,3 +1,4 @@
+import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import {
@@ -18,9 +19,11 @@ import {
   goalLabels,
 } from "@/data/mockData";
 import { ArrowLeft, Play, Target, User, TrendingUp } from "lucide-react";
+import { toast } from "sonner";
 
 const Preparation = () => {
   const navigate = useNavigate();
+  const [isLoading, setIsLoading] = useState(false);
   const config = storage.getCurrentConfig();
 
   if (!config) {
@@ -31,6 +34,40 @@ const Preparation = () => {
   const selectedOffers = mockOffers.filter((offer) =>
     config.selectedOffers.includes(offer.id)
   );
+
+  const handleStartConversation = async () => {
+    setIsLoading(true);
+    try {
+      const payload = {
+        trainingConfig: config,
+        selectedOffers: selectedOffers,
+      };
+
+      console.log("Starting conversation with payload:", payload);
+
+      // Placeholder for the actual API call
+      // In a real scenario, you might want to await this
+      try {
+        await fetch("/api/start-training", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(payload),
+        });
+      } catch (error) {
+        console.error("Failed to send start training data:", error);
+        // We continue anyway as this might be just analytics/logging
+      }
+
+      navigate("/conversation");
+    } catch (error) {
+      console.error("Error starting conversation:", error);
+      toast.error("Wystąpił błąd podczas rozpoczynania rozmowy");
+    } finally {
+      setIsLoading(false);
+    }
+  };
 
   return (
     <div className="min-h-screen bg-background">
@@ -157,10 +194,15 @@ const Preparation = () => {
           <Button
             size="lg"
             className="gradient-primary text-lg px-12 gap-3 shadow-custom-md hover:shadow-custom-lg transition-all"
-            onClick={() => navigate("/conversation")}
+            onClick={handleStartConversation}
+            disabled={isLoading}
           >
-            <Play className="w-5 h-5" />
-            Rozpocznij rozmowę
+            {isLoading ? (
+              <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin" />
+            ) : (
+              <Play className="w-5 h-5" />
+            )}
+            {isLoading ? "Rozpoczynanie..." : "Rozpocznij rozmowę"}
           </Button>
         </div>
       </main>
