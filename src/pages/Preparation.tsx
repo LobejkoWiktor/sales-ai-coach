@@ -10,7 +10,8 @@ import {
 } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { storage } from "@/lib/storage";
-import { mockOffers } from "@/data/mockData";
+import { createChatSession } from "@/lib/api";
+import { mockOffers, mockPresets } from "@/data/mockData";
 import {
   clientTypeLabels,
   clientTypeDescriptions,
@@ -38,26 +39,54 @@ const Preparation = () => {
   const handleStartConversation = async () => {
     setIsLoading(true);
     try {
+      // Get the current user for userId
+      const currentUser = storage.getCurrentUser();
+      const userId = currentUser?.email || "default@example.com";
+
+      // Build the title: offer names + preset name if applicable
+      const offerNames = selectedOffers.map((offer) => offer.name).join(" + ");
+      const title = config.isPreset && config.presetName
+        ? `${config.presetName} - ${offerNames}`
+        : offerNames;
+
+      // Build client description
+      let clientDescription = clientTypeLabels[config.clientType];
+
+      // For preset sessions, append the preset description
+      if (config.isPreset && config.presetId) {
+        const preset = mockPresets.find((p) => p.id === config.presetId);
+        if (preset) {
+          clientDescription += ` - ${preset.description}`;
+        }
+      }
+
+      // Build constraints (difficulty description)
+      const constraints = difficultyDescriptions[config.difficulty];
+
+      // Get goal label
+      const goal = config.goal ? goalLabels[config.goal] : "";
+
+      // Create the payload
       const payload = {
-        trainingConfig: config,
-        selectedOffers: selectedOffers,
+        userId,
+        title,
+        difficulty: difficultyLabels[config.difficulty],
+        isOwnConfiguration: !config.isPreset,
+        clientDescription,
+        constraints,
+        goal,
       };
 
-      console.log("Starting conversation with payload:", payload);
+      console.log("Creating chat session with payload:", payload);
 
-      // Placeholder for the actual API call
-      // In a real scenario, you might want to await this
+      // Call the API
       try {
-        await fetch("/api/start-training", {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify(payload),
-        });
+        const response = await createChatSession(payload);
+        console.log("Chat session created successfully:", response);
       } catch (error) {
-        console.error("Failed to send start training data:", error);
-        // We continue anyway as this might be just analytics/logging
+        console.error("Failed to create chat session:", error);
+        // We continue anyway as the conversation can still proceed locally
+        toast.error("Nie udało się zapisać sesji, ale możesz kontynuować trening");
       }
 
       navigate("/conversation");

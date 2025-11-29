@@ -92,3 +92,13 @@ export interface TrainingSession {
     improvements: string[];
   };
 }
+
+export interface ChatSessionPayload {
+  userId: string;
+  title: string;
+  difficulty: string;
+  isOwnConfiguration: boolean;
+  clientDescription: string;
+  constraints: string;
+  goal: string;
+}
