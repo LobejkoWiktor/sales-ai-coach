@@ -102,3 +102,12 @@ export interface ChatSessionPayload {
   constraints: string;
   goal: string;
 }
+
+export interface ChatSessionResponse {
+  sessionId: string;
+  message: string;
+}
+
+export interface ChatSessionReportPayload {
+  sessionId: string;
+}

@@ -13,6 +13,7 @@ import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
 import { storage } from "@/lib/storage";
+import { reportChatSession } from "@/lib/api";
 import { mockOffers, mockInsights } from "@/data/mockData";
 import {
   clientTypeLabels,
@@ -34,15 +35,22 @@ import { Message } from "@/types";
 const Conversation = () => {
   const navigate = useNavigate();
   const config = storage.getCurrentConfig();
-  const [messages, setMessages] = useState<Message[]>([
-    {
-      id: "1",
-      role: "client",
-      content:
-        "Dzień dobry! Dziękuję za spotkanie. Jakie rozwiązanie chce mi Pan dzisiaj zaprezentować?",
-      timestamp: new Date().toISOString(),
-    },
-  ]);
+  const sessionData = storage.getCurrentSession();
+
+  const [messages, setMessages] = useState<Message[]>(() => {
+    // Use the initial message from the API if available, otherwise use hardcoded fallback
+    const initialContent = sessionData?.message ||
+      "Dzień dobry! Dziękuję za spotkanie. Jakie rozwiązanie chce mi Pan dzisiaj zaprezentować?";
+
+    return [
+      {
+        id: "1",
+        role: "client",
+        content: initialContent,
+        timestamp: new Date().toISOString(),
+      },
+    ];
+  });
   const [input, setInput] = useState("");
   const {
     isListening,
@@ -100,7 +108,19 @@ const Conversation = () => {
     }, 1500);
   };
 
-  const handleEndConversation = () => {
+  const handleEndConversation = async () => {
+    // Report session completion to the API if we have a session ID
+    if (sessionData?.sessionId) {
+      try {
+        console.log("Reporting session completion with sessionId:", sessionData.sessionId);
+        await reportChatSession({ sessionId: sessionData.sessionId });
+        console.log("Session reported successfully");
+      } catch (error) {
+        console.error("Failed to report session:", error);
+        // Continue to show summary even if reporting fails
+      }
+    }
+
     const session = {
       id: Date.now().toString(),
       date: new Date().toISOString().split("T")[0],

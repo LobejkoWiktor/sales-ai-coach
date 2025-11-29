@@ -83,6 +83,9 @@ const Preparation = () => {
       try {
         const response = await createChatSession(payload);
         console.log("Chat session created successfully:", response);
+
+        // Store the session response for use in the conversation
+        storage.setCurrentSession(response);
       } catch (error) {
         console.error("Failed to create chat session:", error);
         // We continue anyway as the conversation can still proceed locally

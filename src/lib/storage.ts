@@ -1,8 +1,9 @@
-import type { User, TrainingConfig, TrainingSession } from "@/types";
+import type { User, TrainingConfig, TrainingSession, ChatSessionResponse } from "@/types";
 
 class Storage {
   private currentUser: User | null = null;
   private currentConfig: TrainingConfig | null = null;
+  private currentSession: ChatSessionResponse | null = null;
   private sessions: TrainingSession[] = [];
 
   setCurrentUser(user: User | null) {
@@ -19,6 +20,14 @@ class Storage {
 
   getCurrentConfig(): TrainingConfig | null {
     return this.currentConfig;
+  }
+
+  setCurrentSession(session: ChatSessionResponse | null) {
+    this.currentSession = session;
+  }
+
+  getCurrentSession(): ChatSessionResponse | null {
+    return this.currentSession;
   }
 
   addSession(session: TrainingSession) {
