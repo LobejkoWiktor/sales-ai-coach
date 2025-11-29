@@ -131,7 +131,7 @@ const PresetsTab = () => {
                     <SelectValue placeholder="Wybierz cel..." />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="">Brak celu</SelectItem>
+                    <SelectItem value="none">Brak celu</SelectItem>
                     {Object.entries(goalLabels).map(([value, label]) => (
                       <SelectItem key={value} value={value}>
                         {label}
