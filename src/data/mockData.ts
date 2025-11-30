@@ -287,5 +287,5 @@ export const difficultyDescriptions = {
   easy: "Klient jest otwarty na rozmowę, zadaje podstawowe pytania, pozytywnie nastawiony.",
   medium:
     "Klient ma pewne wątpliwości, zadaje trudniejsze pytania, potrzebuje więcej argumentów.",
-  hard: "Klient jest sceptyczny, stawia mocne obiekcje, trudno go przekonać. Wymaga dużego doświadczenia.",
+  hard: "Klient jest sceptyczny, stawia mocne obiekcje, trudno go przekonać.",
 };

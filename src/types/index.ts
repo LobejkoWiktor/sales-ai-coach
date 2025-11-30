@@ -102,8 +102,10 @@ export interface ChatSessionPayload {
   difficulty: string;
   isOwnConfiguration: boolean;
   clientDescription: string;
-  constraints: string;
+  constraints: string[];
   goal: string;
+  productDescription: string;
+  salesPlaybook: string;
 }
 
 export interface ChatSessionResponse {

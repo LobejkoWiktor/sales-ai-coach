@@ -60,8 +60,15 @@ const Preparation = () => {
         }
       }
 
-      // Build constraints (difficulty description)
-      const constraints = difficultyDescriptions[config.difficulty];
+      // Build constraints (difficulty description + specific scenario)
+      const constraints: string[] = [difficultyDescriptions[config.difficulty]];
+
+      // Add specific constraints for the Photovoltaics offer (ID "1")
+      if (selectedOffers.some(offer => offer.id === "1")) {
+        constraints.push("Klient dysponuje budżetem maksymalnie 70 000 PLN, więc nie chce przekraczać tej kwoty przy zakupie instalacji i magazynu energii.");
+        constraints.push("Oczekuje, że montaż zostanie zakończony w ciągu 6–8 tygodni, krócej niż standardowy czas realizacji 8–10 tygodni.");
+        constraints.push("Dach klienta ma ograniczoną powierzchnię 50 m² i częściowo zacienione fragmenty, co wymaga optymalizacji ustawienia paneli.");
+      }
 
       // Get goal label
       const goal = config.goal ? goalLabels[config.goal] : "";
@@ -75,6 +82,9 @@ const Preparation = () => {
         clientDescription,
         constraints,
         goal,
+        productDescription: selectedOffers[0]?.description || "",
+        salesPlaybook:
+          "Handlowiec powinien w przystępny sposób łączyć najważniejsze elementy oferty — instalację 8 kWp, magazyn 10 kWh, pełną obsługę i finansowanie 0% — z potrzebami klienta, pokazując praktyczne korzyści i możliwe oszczędności. Jednocześnie powinien transparentnie omawiać cenę, terminy oraz ewentualne czynniki wpływające na koszt montażu, dbając o jasną i rzetelną komunikację.",
       };
 
       console.log("Creating chat session with payload:", payload);
