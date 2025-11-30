@@ -28,14 +28,17 @@ export type ClientType =
   | "cfo-decisive"
   | "small-business-owner"
   | "it-director"
-  | "corporate-buyer";
+  | "corporate-buyer"
+  | "modern-entrepreneur";
 
 export type DifficultyLevel = "easy" | "medium" | "hard";
 
 export type ConversationGoal =
   | "schedule-demo"
   | "close-sale"
-  | "qualify-lead";
+  | "qualify-lead"
+  | "cost-optimization"
+  | "learn-benefits";
 
 export interface TrainingPreset {
   id: string;

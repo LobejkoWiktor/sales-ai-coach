@@ -24,10 +24,10 @@ export const mockUsers: User[] = [
 export const mockOffers: Offer[] = [
   {
     id: "1",
-    name: "SalesForce CRM Enterprise",
+    name: "Fotowoltaika 8 kWp z magazynem energii",
     description:
-      "Zaawansowane rozwiązanie CRM dla dużych organizacji z pełną integracją",
-    tags: ["SaaS", "Enterprise", "CRM"],
+      "Kompleksowa instalacja PV 8 kWp z baterią 10 kWh, zapewniająca wysokie oszczędności, niezależność energetyczną i pełne wsparcie montażowe.",
+    tags: ["Fotowoltaika", "Magazyn energii", "Oszczędność"],
     isActive: true,
     materials: [
       {
@@ -106,13 +106,13 @@ export const mockOffers: Offer[] = [
 export const mockPresets: TrainingPreset[] = [
   {
     id: "p1",
-    name: "CFO – Demo CRM Enterprise",
+    name: "Rozmowa z klientem zainteresowanym fotowoltaiką 8 kWp z magazynem energii",
     description:
-      "Rozmowa z CFO dużej firmy, nacisk na ROI i integracje finansowe",
+      "Rozmowa o oszczędnościach i nowoczesnych technologiach",
     offerId: "1",
-    clientType: "cfo-decisive",
+    clientType: "modern-entrepreneur",
     difficulty: "hard",
-    goal: "schedule-demo",
+    goal: "learn-benefits",
     createdAt: "2024-11-01",
     updatedAt: "2024-11-15",
   },
@@ -253,6 +253,7 @@ export const clientTypeLabels = {
   "small-business-owner": "Właściciel małej firmy",
   "it-director": "Dyrektor IT",
   "corporate-buyer": "Kupiec korporacyjny",
+  "modern-entrepreneur": "Właściciel domu szukający oszczędności",
 };
 
 export const difficultyLabels = {
@@ -265,6 +266,8 @@ export const goalLabels = {
   "schedule-demo": "Umówienie demo",
   "close-sale": "Domknięcie sprzedaży",
   "qualify-lead": "Kwalifikacja leadu",
+  "cost-optimization": "Automatyzacja i redukcja kosztów",
+  "learn-benefits": "Poznać koszty i korzyści instalacji",
 };
 
 export const clientTypeDescriptions = {
@@ -276,6 +279,8 @@ export const clientTypeDescriptions = {
     "Dyrektor techniczny, zadaje szczegółowe pytania o integracje, bezpieczeństwo i skalowalność. Analizuje aspekty techniczne.",
   "corporate-buyer":
     "Osoba odpowiedzialna za zakupy w korporacji. Interesuje ją zgodność z procedurami, terminy dostaw, wsparcie.",
+  "modern-entrepreneur":
+    "Właściciel domu szukający oszczędności, zainteresowany fotowoltaiką i magazynem energii.",
 };
 
 export const difficultyDescriptions = {
