@@ -43,7 +43,7 @@ const Login = () => {
           <div className="mx-auto w-16 h-16 bg-gradient-primary rounded-2xl flex items-center justify-center shadow-custom-md">
             <Sparkles className="w-8 h-8 text-primary-foreground" />
           </div>
-          <CardTitle className="text-3xl font-heading">SalesCoach AI</CardTitle>
+          <CardTitle className="text-3xl font-heading">SalesTwin</CardTitle>
           <CardDescription className="text-base">
             Trenuj sprzedaż z AI-klientem
           </CardDescription>

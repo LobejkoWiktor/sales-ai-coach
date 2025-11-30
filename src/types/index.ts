@@ -128,3 +128,12 @@ export interface GetReportResponse {
 export interface ChatSessionReportPayload {
   sessionId: string;
 }
+
+export interface SendMessagePayload {
+  sessionId: string;
+  content: string;
+}
+
+export interface SendMessageResponse {
+  message: string;
+}

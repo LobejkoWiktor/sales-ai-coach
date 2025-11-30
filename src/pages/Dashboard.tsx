@@ -28,7 +28,7 @@ const Dashboard = () => {
       <header className="border-b border-border bg-card">
         <div className="container mx-auto px-4 py-4">
           <div className="flex items-center justify-between">
-            <h1 className="text-2xl font-heading font-bold">SalesCoach AI</h1>
+            <h1 className="text-2xl font-heading font-bold">SalesTwin</h1>
             <Button variant="outline" size="sm" onClick={() => navigate("/")}>
               Wyloguj
             </Button>
@@ -120,8 +120,8 @@ const Dashboard = () => {
                         session.score >= 80
                           ? "default"
                           : session.score >= 60
-                          ? "secondary"
-                          : "destructive"
+                            ? "secondary"
+                            : "destructive"
                       }
                       className="shrink-0"
                     >

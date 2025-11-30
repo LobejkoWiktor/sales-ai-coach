@@ -1,4 +1,4 @@
-import type { ChatSessionPayload, ChatSessionResponse, ChatSessionReportPayload, GetReportResponse } from "@/types";
+import type { ChatSessionPayload, ChatSessionResponse, ChatSessionReportPayload, GetReportResponse, SendMessagePayload, SendMessageResponse } from "@/types";
 
 const API_BASE_URL = "https://salestwin-d8fcabg7bedte0ah.polandcentral-01.azurewebsites.net";
 
@@ -63,6 +63,41 @@ export async function reportChatSession(payload: ChatSessionReportPayload): Prom
         }
 
         return await response.json();
+    } catch (error) {
+        if (error instanceof ApiError) {
+            throw error;
+        }
+        throw new ApiError(
+            `Network error: ${error instanceof Error ? error.message : "Unknown error"}`
+        );
+    }
+}
+
+export async function sendMessage(payload: SendMessagePayload): Promise<SendMessageResponse> {
+    try {
+        console.log("Sending message to API:", payload);
+
+        const response = await fetch(`${API_BASE_URL}/chat-sessions/messages`, {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify(payload),
+        });
+
+        if (!response.ok) {
+            const errorData = await response.json().catch(() => ({}));
+            throw new ApiError(
+                `Failed to send message: ${response.statusText}`,
+                response.status,
+                errorData
+            );
+        }
+
+        const responseData = await response.json();
+        console.log("Received response from API:", responseData);
+
+        return responseData;
     } catch (error) {
         if (error instanceof ApiError) {
             throw error;

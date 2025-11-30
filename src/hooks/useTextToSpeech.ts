@@ -14,15 +14,18 @@ export const useTextToSpeech = () => {
             const setVoice = () => {
                 const voices = synthRef.current?.getVoices() || [];
 
-                // Prioritize Google US English voices (they sound less robotic)
+                // Prioritize Google Polish voices (they sound less robotic)
                 const googleVoice = voices.find(voice =>
-                    voice.name.includes("Google") && voice.lang.startsWith("en")
+                    voice.name.includes("Google") && voice.lang.startsWith("pl")
                 );
 
-                // Fallback to any English voice if Google voice not available
-                const englishVoice = voices.find(voice => voice.lang.startsWith("en"));
+                // Fallback to any Polish voice if Google voice not available
+                const polishVoice = voices.find(voice => voice.lang.startsWith("pl"));
 
-                voiceRef.current = googleVoice || englishVoice || voices[0] || null;
+                // Fallback to English if no Polish voice is found
+                const englishVoice = voices.find(voice => voice.name.includes("Google") && voice.lang.startsWith("en"));
+
+                voiceRef.current = googleVoice || polishVoice || englishVoice || voices[0] || null;
             };
 
             // Voices might not be loaded immediately

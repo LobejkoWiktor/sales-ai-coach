@@ -1,9 +1,17 @@
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect, useCallback, useRef } from "react";
 
-export const useSpeechRecognition = () => {
+interface UseSpeechRecognitionOptions {
+    onSilenceDetected?: () => void;
+    silenceThreshold?: number; // in milliseconds
+}
+
+export const useSpeechRecognition = (options?: UseSpeechRecognitionOptions) => {
+    const { onSilenceDetected, silenceThreshold = 2000 } = options || {};
     const [isListening, setIsListening] = useState(false);
     const [transcript, setTranscript] = useState("");
     const [recognition, setRecognition] = useState<any>(null);
+    const silenceTimerRef = useRef<NodeJS.Timeout | null>(null);
+    const lastTranscriptRef = useRef("");
 
     useEffect(() => {
         if (typeof window !== "undefined") {
@@ -21,6 +29,23 @@ export const useSpeechRecognition = () => {
                         currentTranscript += event.results[i][0].transcript;
                     }
                     setTranscript(currentTranscript);
+
+                    // Reset silence timer when new speech is detected
+                    if (onSilenceDetected && currentTranscript !== lastTranscriptRef.current) {
+                        lastTranscriptRef.current = currentTranscript;
+
+                        // Clear existing timer
+                        if (silenceTimerRef.current) {
+                            clearTimeout(silenceTimerRef.current);
+                        }
+
+                        // Only set timer if there's actual content
+                        if (currentTranscript.trim()) {
+                            silenceTimerRef.current = setTimeout(() => {
+                                onSilenceDetected();
+                            }, silenceThreshold);
+                        }
+                    }
                 };
 
                 recognitionInstance.onerror = (event: any) => {
@@ -35,13 +60,21 @@ export const useSpeechRecognition = () => {
                 setRecognition(recognitionInstance);
             }
         }
-    }, []);
+
+        // Cleanup timer on unmount
+        return () => {
+            if (silenceTimerRef.current) {
+                clearTimeout(silenceTimerRef.current);
+            }
+        };
+    }, [onSilenceDetected, silenceThreshold]);
 
     const startListening = useCallback(() => {
         if (recognition) {
             try {
                 recognition.start();
                 setIsListening(true);
+                lastTranscriptRef.current = "";
             } catch (error) {
                 console.error("Error starting speech recognition:", error);
             }
@@ -52,11 +85,24 @@ export const useSpeechRecognition = () => {
         if (recognition) {
             recognition.stop();
             setIsListening(false);
+
+            // Clear silence timer when stopping
+            if (silenceTimerRef.current) {
+                clearTimeout(silenceTimerRef.current);
+                silenceTimerRef.current = null;
+            }
         }
     }, [recognition]);
 
     const resetTranscript = useCallback(() => {
         setTranscript("");
+        lastTranscriptRef.current = "";
+
+        // Clear silence timer when resetting
+        if (silenceTimerRef.current) {
+            clearTimeout(silenceTimerRef.current);
+            silenceTimerRef.current = null;
+        }
     }, []);
 
     return {

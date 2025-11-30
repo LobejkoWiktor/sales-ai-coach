@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback, useRef } from "react";
 import { useSpeechRecognition } from "@/hooks/useSpeechRecognition";
 import { useTextToSpeech } from "@/hooks/useTextToSpeech";
 import { useNavigate } from "react-router-dom";
@@ -14,7 +14,7 @@ import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
 import { storage } from "@/lib/storage";
-import { reportChatSession } from "@/lib/api";
+import { reportChatSession, sendMessage } from "@/lib/api";
 import { mockOffers, mockInsights } from "@/data/mockData";
 import {
   clientTypeLabels,
@@ -32,6 +32,7 @@ import {
   TrendingUp,
   Volume2,
   VolumeX,
+  Radio,
 } from "lucide-react";
 import { Message } from "@/types";
 
@@ -55,13 +56,39 @@ const Conversation = () => {
     ];
   });
   const [input, setInput] = useState("");
+  const [isLiveMode, setIsLiveMode] = useState(false);
+
+  // Use refs to access latest values in silence detection callback
+  const inputRef = useRef("");
+  const isLiveModeRef = useRef(false);
+  const sendMessageRef = useRef<() => void>();
+
+  // Keep refs in sync with state
+  useEffect(() => {
+    inputRef.current = input;
+  }, [input]);
+
+  useEffect(() => {
+    isLiveModeRef.current = isLiveMode;
+  }, [isLiveMode]);
+
+  // Callback for silence detection in live mode
+  const handleSilenceDetected = useCallback(() => {
+    if (isLiveModeRef.current && inputRef.current.trim()) {
+      sendMessageRef.current?.();
+    }
+  }, []);
+
   const {
     isListening,
     transcript,
     startListening,
     stopListening,
     resetTranscript,
-  } = useSpeechRecognition();
+  } = useSpeechRecognition({
+    onSilenceDetected: handleSilenceDetected,
+    silenceThreshold: 2000,
+  });
   const {
     isTTSEnabled,
     toggleTTS,
@@ -75,6 +102,29 @@ const Conversation = () => {
       setInput(transcript);
     }
   }, [transcript]);
+
+  // Handle live mode toggle
+  useEffect(() => {
+    if (isLiveMode) {
+      // Enable TTS when live mode is activated
+      if (!isTTSEnabled) {
+        toggleTTS();
+      }
+      // Start listening when live mode is activated
+      if (!isListening) {
+        startListening();
+      }
+    } else {
+      // Stop listening when live mode is deactivated
+      if (isListening) {
+        stopListening();
+      }
+      // Disable TTS when live mode is deactivated
+      if (isTTSEnabled) {
+        toggleTTS();
+      }
+    }
+  }, [isLiveMode]);
 
   // Auto-speak AI client messages when TTS is enabled
   useEffect(() => {
@@ -100,32 +150,60 @@ const Conversation = () => {
     config.selectedOffers.includes(insight.offerId)
   );
 
-  const handleSendMessage = () => {
-    if (!input.trim()) return;
+  const handleSendMessage = useCallback(async () => {
+    // Capture the current input value immediately
+    const messageContent = inputRef.current.trim();
+    if (!messageContent) return;
 
     const newMessage: Message = {
       id: Date.now().toString(),
       role: "rep",
-      content: input,
+      content: messageContent,
       timestamp: new Date().toISOString(),
     };
 
-    setMessages([...messages, newMessage]);
+    // Clear input immediately after capturing
     setInput("");
+    inputRef.current = "";
     resetTranscript();
-    setProgress(Math.min(progress + 10, 85));
 
-    setTimeout(() => {
-      const clientResponse: Message = {
-        id: (Date.now() + 1).toString(),
-        role: "client",
-        content:
-          "To brzmi interesująco. Czy mógłby Pan podać więcej szczegółów na temat integracji z naszym obecnym systemem?",
-        timestamp: new Date().toISOString(),
-      };
-      setMessages((prev) => [...prev, clientResponse]);
-    }, 1500);
-  };
+    setMessages((prev) => [...prev, newMessage]);
+    setProgress((prev) => Math.min(prev + 10, 85));
+
+    // Call the API to send the message and get client response
+    if (sessionData?.sessionId) {
+      try {
+        const response = await sendMessage({
+          sessionId: sessionData.sessionId,
+          content: messageContent,
+        });
+
+        console.log("API Response from /chat-sessions/messages:", response);
+        console.log("Message content:", response.message);
+
+        const clientResponse: Message = {
+          id: (Date.now() + 1).toString(),
+          role: "client",
+          content: response.message,
+          timestamp: new Date().toISOString(),
+        };
+        setMessages((prev) => [...prev, clientResponse]);
+      } catch (error) {
+        console.error("Failed to send message:", error);
+        // Fallback to a generic error message if API fails
+        const errorResponse: Message = {
+          id: (Date.now() + 1).toString(),
+          role: "client",
+          content: "Przepraszam, wystąpił problem z połączeniem. Spróbuj ponownie.",
+          timestamp: new Date().toISOString(),
+        };
+        setMessages((prev) => [...prev, errorResponse]);
+      }
+    }
+  }, [sessionData?.sessionId, resetTranscript]);
+
+  // Assign to ref for silence detection callback
+  sendMessageRef.current = handleSendMessage;
 
   const handleEndConversation = async () => {
     // Report session completion to the API if we have a session ID
@@ -227,9 +305,19 @@ const Conversation = () => {
           <div className="border-b border-border bg-card px-4 py-3">
             <div className="flex items-center justify-center gap-4">
               <Button
+                variant={isLiveMode ? "default" : "outline"}
+                size="lg"
+                onClick={() => setIsLiveMode(!isLiveMode)}
+                className={`gap-2 ${isLiveMode ? 'bg-green-600 hover:bg-green-700' : ''}`}
+              >
+                <Radio className={`w-5 h-5 ${isLiveMode ? 'animate-pulse' : ''}`} />
+                {isLiveMode ? "Tryb Live" : "Włącz Live"}
+              </Button>
+              <Button
                 variant={isListening ? "destructive" : "default"}
                 size="lg"
                 onClick={isListening ? stopListening : startListening}
+                disabled={isLiveMode}
                 className="gap-2"
               >
                 {isListening ? (
@@ -248,6 +336,7 @@ const Conversation = () => {
                 variant={isTTSEnabled ? "default" : "outline"}
                 size="lg"
                 onClick={toggleTTS}
+                disabled={isLiveMode}
                 className="gap-2"
               >
                 {isTTSEnabled ? (
@@ -263,7 +352,11 @@ const Conversation = () => {
                 )}
               </Button>
               <div className="text-sm text-muted-foreground">
-                {isSpeaking ? (
+                {isLiveMode ? (
+                  <span className="text-green-600 font-medium">
+                    🔴 Rozmowa na żywo
+                  </span>
+                ) : isSpeaking ? (
                   <span className="text-primary font-medium">
                     🎤 Klient mówi...
                   </span>
