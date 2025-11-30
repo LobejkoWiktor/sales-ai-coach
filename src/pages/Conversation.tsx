@@ -113,14 +113,48 @@ const Conversation = () => {
     if (sessionData?.sessionId) {
       try {
         console.log("Reporting session completion with sessionId:", sessionData.sessionId);
-        await reportChatSession({ sessionId: sessionData.sessionId });
-        console.log("Session reported successfully");
+        const reportResponse = await reportChatSession({ sessionId: sessionData.sessionId });
+        console.log("Session reported successfully, received report:", reportResponse);
+
+        // Check if we have valid report data
+        if (reportResponse.report) {
+          const session = {
+            id: reportResponse.sessionId,
+            date: new Date().toISOString().split("T")[0],
+            config,
+            score: reportResponse.report.overallScore,
+            metrics: {
+              productKnowledge: reportResponse.report.offerKnowledgeScore,
+              needsAnalysis: reportResponse.report.needsAnalysisScore,
+              valueArgumentation: reportResponse.report.valueArgumentationScore,
+            },
+            usedInsights: relevantInsights.slice(0, 2),
+            messages,
+            feedback: {
+              strengths: reportResponse.report.positiveComments,
+              improvements: reportResponse.report.improvementComments,
+            },
+          };
+
+          storage.addSession(session);
+          navigate(`/summary/${session.id}`);
+        } else {
+          console.error("No report data received from API");
+          // Fallback to mock data if no report is available
+          createMockSessionAndNavigate();
+        }
       } catch (error) {
         console.error("Failed to report session:", error);
-        // Continue to show summary even if reporting fails
+        // Continue to show summary with mock data even if reporting fails
+        createMockSessionAndNavigate();
       }
+    } else {
+      // No session ID, use mock data
+      createMockSessionAndNavigate();
     }
+  };
 
+  const createMockSessionAndNavigate = () => {
     const session = {
       id: Date.now().toString(),
       date: new Date().toISOString().split("T")[0],

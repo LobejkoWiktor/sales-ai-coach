@@ -1,4 +1,4 @@
-import type { ChatSessionPayload, ChatSessionResponse, ChatSessionReportPayload } from "@/types";
+import type { ChatSessionPayload, ChatSessionResponse, ChatSessionReportPayload, GetReportResponse } from "@/types";
 
 const API_BASE_URL = "https://salestwin-d8fcabg7bedte0ah.polandcentral-01.azurewebsites.net";
 
@@ -43,7 +43,7 @@ export async function createChatSession(payload: ChatSessionPayload): Promise<Ch
     }
 }
 
-export async function reportChatSession(payload: ChatSessionReportPayload): Promise<void> {
+export async function reportChatSession(payload: ChatSessionReportPayload): Promise<GetReportResponse> {
     try {
         const response = await fetch(`${API_BASE_URL}/chat-sessions/report`, {
             method: "POST",
@@ -61,6 +61,8 @@ export async function reportChatSession(payload: ChatSessionReportPayload): Prom
                 errorData
             );
         }
+
+        return await response.json();
     } catch (error) {
         if (error instanceof ApiError) {
             throw error;

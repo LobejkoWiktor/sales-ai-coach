@@ -108,6 +108,23 @@ export interface ChatSessionResponse {
   message: string;
 }
 
+export interface ReportDto {
+  overallScore: number;
+  offerKnowledgeScore: number;
+  needsAnalysisScore: number;
+  valueArgumentationScore: number;
+  positiveComments: string[];
+  improvementComments: string[];
+}
+
+export interface GetReportResponse {
+  sessionId: string;
+  title: string;
+  difficulty: string;
+  isOwnConfiguration: boolean;
+  report: ReportDto | null;
+}
+
 export interface ChatSessionReportPayload {
   sessionId: string;
 }
