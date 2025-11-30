@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import { useSpeechRecognition } from "@/hooks/useSpeechRecognition";
+import { useTextToSpeech } from "@/hooks/useTextToSpeech";
 import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import {
@@ -29,6 +30,8 @@ import {
   User,
   Target,
   TrendingUp,
+  Volume2,
+  VolumeX,
 } from "lucide-react";
 import { Message } from "@/types";
 
@@ -59,6 +62,11 @@ const Conversation = () => {
     stopListening,
     resetTranscript,
   } = useSpeechRecognition();
+  const {
+    isTTSEnabled,
+    toggleTTS,
+    speak,
+  } = useTextToSpeech();
   const [isSpeaking, setIsSpeaking] = useState(false);
   const [progress, setProgress] = useState(15);
 
@@ -67,6 +75,17 @@ const Conversation = () => {
       setInput(transcript);
     }
   }, [transcript]);
+
+  // Auto-speak AI client messages when TTS is enabled
+  useEffect(() => {
+    if (isTTSEnabled && messages.length > 0) {
+      const lastMessage = messages[messages.length - 1];
+      // Only speak client messages, not rep messages
+      if (lastMessage.role === "client") {
+        speak(lastMessage.content);
+      }
+    }
+  }, [messages, isTTSEnabled, speak]);
 
   if (!config) {
     navigate("/offers");
@@ -222,6 +241,24 @@ const Conversation = () => {
                   <>
                     <Mic className="w-5 h-5" />
                     Start / Mów
+                  </>
+                )}
+              </Button>
+              <Button
+                variant={isTTSEnabled ? "default" : "outline"}
+                size="lg"
+                onClick={toggleTTS}
+                className="gap-2"
+              >
+                {isTTSEnabled ? (
+                  <>
+                    <Volume2 className="w-5 h-5" />
+                    TTS Włączony
+                  </>
+                ) : (
+                  <>
+                    <VolumeX className="w-5 h-5" />
+                    TTS Wyłączony
                   </>
                 )}
               </Button>
