@@ -1,4 +1,9 @@
 # Welcome to your Lovable project
+# Live Demo available for everyone here: 
+sales-ai-coach-1tnm.vercel.app
+Anything in mail and passowrd will let you pass
+
+# Welcome to your Lovable project
 
 ## Project info
 
