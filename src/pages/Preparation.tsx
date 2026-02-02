@@ -89,18 +89,21 @@ const Preparation = () => {
 
       console.log("Creating chat session with payload:", payload);
 
-      // Call the API
-      try {
-        const response = await createChatSession(payload);
-        console.log("Chat session created successfully:", response);
+      // Call the API - COMMENTED OUT FOR DEMO MODE
+      // try {
+      //   const response = await createChatSession(payload);
+      //   console.log("Chat session created successfully:", response);
 
-        // Store the session response for use in the conversation
-        storage.setCurrentSession(response);
-      } catch (error) {
-        console.error("Failed to create chat session:", error);
-        // We continue anyway as the conversation can still proceed locally
-        toast.error("Nie udało się zapisać sesji, ale możesz kontynuować trening");
-      }
+      //   // Store the session response for use in the conversation
+      //   storage.setCurrentSession(response);
+      // } catch (error) {
+      //   console.error("Failed to create chat session:", error);
+      //   // We continue anyway as the conversation can still proceed locally
+      //   toast.error("Nie udało się zapisać sesji, ale możesz kontynuować trening");
+      // }
+
+      // Demo mode: Skip API call and proceed directly
+      console.log("Demo mode: Skipping API call, proceeding with mock session");
 
       navigate("/conversation");
     } catch (error) {

@@ -14,7 +14,7 @@ import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { UserRole } from "@/types";
 import { mockUsers } from "@/data/mockData";
 import { storage } from "@/lib/storage";
-import { Sparkles } from "lucide-react";
+import { Sparkles, Info } from "lucide-react";
 
 const Login = () => {
   const navigate = useNavigate();
@@ -49,6 +49,17 @@ const Login = () => {
           </CardDescription>
         </CardHeader>
         <CardContent>
+          {/* Demo App Notice */}
+          <div className="mb-6 p-4 bg-blue-50 dark:bg-blue-950/30 border border-blue-200 dark:border-blue-800 rounded-lg flex items-start gap-3">
+            <Info className="w-5 h-5 text-blue-600 dark:text-blue-400 flex-shrink-0 mt-0.5" />
+            <div className="text-sm text-blue-900 dark:text-blue-100">
+              <p className="font-medium mb-1">Demo Application</p>
+              <p className="text-blue-700 dark:text-blue-300">
+                You can log in using <strong>any email and password combination</strong>. Just select your role below and click "Zaloguj się".
+              </p>
+            </div>
+          </div>
+
           <form onSubmit={handleLogin} className="space-y-6">
             <div className="space-y-4">
               <div className="space-y-2">

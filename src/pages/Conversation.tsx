@@ -170,36 +170,48 @@ const Conversation = () => {
     setMessages((prev) => [...prev, newMessage]);
     setProgress((prev) => Math.min(prev + 10, 85));
 
-    // Call the API to send the message and get client response
-    if (sessionData?.sessionId) {
-      try {
-        const response = await sendMessage({
-          sessionId: sessionData.sessionId,
-          content: messageContent,
-        });
+    // DEMO MODE: Use mock response instead of API call
+    // Simulate a delay for more realistic conversation flow
+    setTimeout(() => {
+      const mockClientResponse: Message = {
+        id: (Date.now() + 1).toString(),
+        role: "client",
+        content: "Dziękuję za Twoją odpowiedź. To jest wersja demonstracyjna aplikacji SalesTwin - pełna wersja z AI-klientem będzie dostępna wkrótce. W pełnej wersji otrzymasz realistyczne odpowiedzi od AI-klienta, który będzie reagował na Twoje argumenty sprzedażowe i pomagał Ci doskonalić umiejętności.",
+        timestamp: new Date().toISOString(),
+      };
+      setMessages((prev) => [...prev, mockClientResponse]);
+    }, 800);
 
-        console.log("API Response from /chat-sessions/messages:", response);
-        console.log("Message content:", response.message);
+    // Original API call - COMMENTED OUT FOR DEMO MODE
+    // if (sessionData?.sessionId) {
+    //   try {
+    //     const response = await sendMessage({
+    //       sessionId: sessionData.sessionId,
+    //       content: messageContent,
+    //     });
 
-        const clientResponse: Message = {
-          id: (Date.now() + 1).toString(),
-          role: "client",
-          content: response.message,
-          timestamp: new Date().toISOString(),
-        };
-        setMessages((prev) => [...prev, clientResponse]);
-      } catch (error) {
-        console.error("Failed to send message:", error);
-        // Fallback to a generic error message if API fails
-        const errorResponse: Message = {
-          id: (Date.now() + 1).toString(),
-          role: "client",
-          content: "Przepraszam, wystąpił problem z połączeniem. Spróbuj ponownie.",
-          timestamp: new Date().toISOString(),
-        };
-        setMessages((prev) => [...prev, errorResponse]);
-      }
-    }
+    //     console.log("API Response from /chat-sessions/messages:", response);
+    //     console.log("Message content:", response.message);
+
+    //     const clientResponse: Message = {
+    //       id: (Date.now() + 1).toString(),
+    //       role: "client",
+    //       content: response.message,
+    //       timestamp: new Date().toISOString(),
+    //     };
+    //     setMessages((prev) => [...prev, clientResponse]);
+    //   } catch (error) {
+    //     console.error("Failed to send message:", error);
+    //     // Fallback to a generic error message if API fails
+    //     const errorResponse: Message = {
+    //       id: (Date.now() + 1).toString(),
+    //       role: "client",
+    //       content: "Przepraszam, wystąpił problem z połączeniem. Spróbuj ponownie.",
+    //       timestamp: new Date().toISOString(),
+    //     };
+    //     setMessages((prev) => [...prev, errorResponse]);
+    //   }
+    // }
   }, [sessionData?.sessionId, resetTranscript]);
 
   // Assign to ref for silence detection callback
