@@ -13,11 +13,13 @@ import { Badge } from "@/components/ui/badge";
 import { mockOffers } from "@/data/mockData";
 import { ArrowLeft, ArrowRight } from "lucide-react";
 import { storage } from "@/lib/storage";
+import { useLanguage } from "@/i18n/LanguageContext";
 
 const OfferSelection = () => {
   const navigate = useNavigate();
   const [selectedOffers, setSelectedOffers] = useState<string[]>([]);
   const activeOffers = mockOffers.filter((offer) => offer.isActive);
+  const { t } = useLanguage();
 
   const toggleOffer = (offerId: string) => {
     setSelectedOffers((prev) =>
@@ -50,7 +52,7 @@ const OfferSelection = () => {
             className="gap-2"
           >
             <ArrowLeft className="w-4 h-4" />
-            Powrót do dashboardu
+            {t("offerSelection", "backToDashboard")}
           </Button>
         </div>
       </header>
@@ -58,11 +60,10 @@ const OfferSelection = () => {
       <main className="container mx-auto px-4 py-8 max-w-4xl">
         <div className="mb-8">
           <h1 className="text-3xl font-heading font-bold mb-3">
-            Wybierz oferty do treningu
+            {t("offerSelection", "title")}
           </h1>
           <p className="text-muted-foreground text-lg">
-            Na podstawie wybranych ofert przygotujemy rozmowę i insighty
-            sprzedażowe.
+            {t("offerSelection", "subtitle")}
           </p>
         </div>
 
@@ -112,7 +113,7 @@ const OfferSelection = () => {
             onClick={handleContinue}
             className="gap-2"
           >
-            Pokaż podsumowanie ofert
+            {t("offerSelection", "showSummary")}
             <ArrowRight className="w-4 h-4" />
           </Button>
         </div>

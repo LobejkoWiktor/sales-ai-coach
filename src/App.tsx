@@ -14,29 +14,34 @@ import Conversation from "./pages/Conversation";
 import TrainingSummary from "./pages/TrainingSummary";
 import Manager from "./pages/Manager";
 import NotFound from "./pages/NotFound";
+import { LanguageProvider } from "@/i18n/LanguageContext";
+import LanguageSwitcher from "@/components/LanguageSwitcher";
 
 const queryClient = new QueryClient();
 
 const App = () => (
   <QueryClientProvider client={queryClient}>
     <TooltipProvider>
-      <Toaster />
-      <Sonner />
-      <BrowserRouter>
-        <Routes>
-          <Route path="/" element={<Login />} />
-          <Route path="/dashboard" element={<Dashboard />} />
-          <Route path="/offers" element={<OfferSelection />} />
-          <Route path="/offer-summary" element={<OfferSummary />} />
-          <Route path="/config-type" element={<ConfigType />} />
-          <Route path="/config" element={<TrainingConfig />} />
-          <Route path="/preparation" element={<Preparation />} />
-          <Route path="/conversation" element={<Conversation />} />
-          <Route path="/summary/:id" element={<TrainingSummary />} />
-          <Route path="/manager" element={<Manager />} />
-          <Route path="*" element={<NotFound />} />
-        </Routes>
-      </BrowserRouter>
+      <LanguageProvider>
+        <Toaster />
+        <Sonner />
+        <BrowserRouter>
+          <Routes>
+            <Route path="/" element={<Login />} />
+            <Route path="/dashboard" element={<Dashboard />} />
+            <Route path="/offers" element={<OfferSelection />} />
+            <Route path="/offer-summary" element={<OfferSummary />} />
+            <Route path="/config-type" element={<ConfigType />} />
+            <Route path="/config" element={<TrainingConfig />} />
+            <Route path="/preparation" element={<Preparation />} />
+            <Route path="/conversation" element={<Conversation />} />
+            <Route path="/summary/:id" element={<TrainingSummary />} />
+            <Route path="/manager" element={<Manager />} />
+            <Route path="*" element={<NotFound />} />
+          </Routes>
+          <LanguageSwitcher />
+        </BrowserRouter>
+      </LanguageProvider>
     </TooltipProvider>
   </QueryClientProvider>
 );

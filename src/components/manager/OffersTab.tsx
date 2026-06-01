@@ -22,60 +22,62 @@ import { Textarea } from "@/components/ui/textarea";
 import { Switch } from "@/components/ui/switch";
 import { mockOffers } from "@/data/mockData";
 import { Plus, Pencil, ExternalLink, Trash2 } from "lucide-react";
+import { useLanguage } from "@/i18n/LanguageContext";
 
 const OffersTab = () => {
   const [offers] = useState(mockOffers);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
+  const { language, t } = useLanguage();
 
   return (
     <div className="space-y-6">
       <div className="flex items-center justify-between">
         <div>
-          <h2 className="text-2xl font-heading font-bold">Zarządzanie ofertami</h2>
+          <h2 className="text-2xl font-heading font-bold">{t("offersTab", "title")}</h2>
           <p className="text-muted-foreground">
-            Dodawaj i edytuj oferty dostępne do treningów
+            {t("offersTab", "subtitle")}
           </p>
         </div>
         <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
           <DialogTrigger asChild>
             <Button className="gap-2">
               <Plus className="w-4 h-4" />
-              Dodaj ofertę
+              {t("offersTab", "addOffer")}
             </Button>
           </DialogTrigger>
           <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto">
             <DialogHeader>
-              <DialogTitle>Nowa oferta</DialogTitle>
+              <DialogTitle>{t("offersTab", "newOffer")}</DialogTitle>
               <DialogDescription>
-                Wypełnij informacje o ofercie i dodaj materiały
+                {t("offersTab", "newOfferDesc")}
               </DialogDescription>
             </DialogHeader>
             <div className="space-y-4 py-4">
               <div className="space-y-2">
-                <Label htmlFor="name">Nazwa oferty</Label>
-                <Input id="name" placeholder="np. SalesForce CRM Enterprise" />
+                <Label htmlFor="name">{t("offersTab", "offerName")}</Label>
+                <Input id="name" placeholder={t("offersTab", "offerNamePlaceholder")} />
               </div>
 
               <div className="space-y-2">
-                <Label htmlFor="description">Krótki opis</Label>
+                <Label htmlFor="description">{t("offersTab", "shortDescription")}</Label>
                 <Textarea
                   id="description"
-                  placeholder="Opisz ofertę w 1-2 zdaniach"
+                  placeholder={t("offersTab", "shortDescriptionPlaceholder")}
                   rows={3}
                 />
               </div>
 
               <div className="space-y-2">
-                <Label htmlFor="tags">Tagi (oddzielone przecinkami)</Label>
-                <Input id="tags" placeholder="SaaS, Enterprise, CRM" />
+                <Label htmlFor="tags">{t("offersTab", "tagsLabel")}</Label>
+                <Input id="tags" placeholder={t("offersTab", "tagsPlaceholder")} />
               </div>
 
               <div className="space-y-3">
-                <Label>Materiały / zasoby</Label>
+                <Label>{t("offersTab", "materials")}</Label>
                 <div className="space-y-2">
                   <div className="flex gap-2">
-                    <Input placeholder="Label (np. Prezentacja PDF)" className="flex-1" />
-                    <Input placeholder="URL" className="flex-1" />
+                    <Input placeholder={t("offersTab", "labelPlaceholder")} className="flex-1" />
+                    <Input placeholder={t("offersTab", "urlPlaceholder")} className="flex-1" />
                     <Button variant="outline" size="icon">
                       <Plus className="w-4 h-4" />
                     </Button>
@@ -83,17 +85,17 @@ const OffersTab = () => {
                 </div>
                 <Button variant="outline" size="sm" className="w-full">
                   <Plus className="w-4 h-4 mr-2" />
-                  Dodaj kolejny materiał
+                  {t("offersTab", "addAnotherMaterial")}
                 </Button>
               </div>
 
               <div className="flex items-center justify-between p-4 bg-secondary/50 rounded-lg">
                 <div>
                   <Label htmlFor="active" className="text-base">
-                    Oferta aktywna
+                    {t("offersTab", "offerActive")}
                   </Label>
                   <p className="text-sm text-muted-foreground">
-                    Tylko aktywne oferty są dostępne do treningów
+                    {t("offersTab", "offerActiveDesc")}
                   </p>
                 </div>
                 <Switch id="active" defaultChecked />
@@ -104,10 +106,10 @@ const OffersTab = () => {
                 variant="outline"
                 onClick={() => setIsDialogOpen(false)}
               >
-                Anuluj
+                {t("common", "cancel")}
               </Button>
               <Button onClick={() => setIsDialogOpen(false)}>
-                Dodaj ofertę
+                {t("offersTab", "addOffer")}
               </Button>
             </div>
           </DialogContent>
@@ -125,7 +127,7 @@ const OffersTab = () => {
                       {offer.name}
                     </CardTitle>
                     <Badge variant={offer.isActive ? "default" : "secondary"}>
-                      {offer.isActive ? "Aktywna" : "Nieaktywna"}
+                      {offer.isActive ? t("common", "active") : t("common", "inactive")}
                     </Badge>
                   </div>
                   <CardDescription className="text-base">
@@ -153,7 +155,7 @@ const OffersTab = () => {
             {offer.materials.length > 0 && (
               <CardContent>
                 <h4 className="font-semibold mb-2 text-sm text-muted-foreground">
-                  Materiały ({offer.materials.length})
+                  {t("offersTab", "materialsCount")} ({offer.materials.length})
                 </h4>
                 <div className="space-y-1">
                   {offer.materials.map((material) => (
@@ -173,8 +175,8 @@ const OffersTab = () => {
             )}
 
             <CardContent className="text-xs text-muted-foreground border-t pt-3">
-              Ostatnia aktualizacja:{" "}
-              {new Date(offer.updatedAt).toLocaleDateString("pl-PL")}
+              {t("offersTab", "lastUpdate")}{" "}
+              {new Date(offer.updatedAt).toLocaleDateString(language === "pl" ? "pl-PL" : "en-US")}
             </CardContent>
           </Card>
         ))}

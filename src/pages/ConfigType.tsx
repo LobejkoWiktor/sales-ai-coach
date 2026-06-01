@@ -10,16 +10,13 @@ import {
 import { Badge } from "@/components/ui/badge";
 import { mockOffers, mockPresets } from "@/data/mockData";
 import { storage } from "@/lib/storage";
-import {
-  clientTypeLabels,
-  difficultyLabels,
-  goalLabels,
-} from "@/data/mockData";
 import { ArrowLeft, Settings, Sparkles } from "lucide-react";
+import { useLanguage } from "@/i18n/LanguageContext";
 
 const ConfigType = () => {
   const navigate = useNavigate();
   const config = storage.getCurrentConfig();
+  const { t } = useLanguage();
 
   if (!config?.selectedOffers || config.selectedOffers.length === 0) {
     navigate("/offers");
@@ -58,7 +55,7 @@ const ConfigType = () => {
             className="gap-2"
           >
             <ArrowLeft className="w-4 h-4" />
-            Powrót
+            {t("common", "back")}
           </Button>
         </div>
       </header>
@@ -66,10 +63,10 @@ const ConfigType = () => {
       <main className="container mx-auto px-4 py-8 max-w-6xl">
         <div className="mb-8">
           <h1 className="text-3xl font-heading font-bold mb-3">
-            Jak chcesz skonfigurować trening?
+            {t("configType", "title")}
           </h1>
           <p className="text-muted-foreground text-lg">
-            Wybierz gotową konfigurację od managera lub stwórz własną
+            {t("configType", "subtitle")}
           </p>
         </div>
 
@@ -78,11 +75,11 @@ const ConfigType = () => {
             <div className="flex items-center gap-2 mb-4">
               <Sparkles className="w-5 h-5 text-primary" />
               <h2 className="text-xl font-heading font-semibold">
-                Konfiguracje od managera
+                {t("configType", "managerConfigs")}
               </h2>
             </div>
             <p className="text-muted-foreground mb-6">
-              Rekomendowane ustawienia od Twojego managera
+              {t("configType", "managerRecommended")}
             </p>
 
             {relevantPresets.length > 0 ? (
@@ -100,7 +97,7 @@ const ConfigType = () => {
                             {preset.name}
                           </CardTitle>
                           <Badge variant="outline" className="shrink-0">
-                            Preset
+                            {t("common", "preset")}
                           </Badge>
                         </div>
                         <CardDescription className="text-sm">
@@ -111,29 +108,29 @@ const ConfigType = () => {
                         <div className="grid grid-cols-2 gap-2 text-sm">
                           <div>
                             <span className="text-muted-foreground">
-                              Oferta:
+                              {t("common", "offer")}
                             </span>
                             <p className="font-medium">{offer?.name}</p>
                           </div>
                           <div>
-                            <span className="text-muted-foreground">Klient:</span>
+                            <span className="text-muted-foreground">{t("common", "client")}</span>
                             <p className="font-medium">
-                              {clientTypeLabels[preset.clientType]}
+                              {t("clientTypeLabels", preset.clientType)}
                             </p>
                           </div>
                           <div>
                             <span className="text-muted-foreground">
-                              Trudność:
+                              {t("common", "difficulty")}
                             </span>
                             <p className="font-medium">
-                              {difficultyLabels[preset.difficulty]}
+                              {t("difficultyLabels", preset.difficulty)}
                             </p>
                           </div>
                           {preset.goal && (
                             <div>
-                              <span className="text-muted-foreground">Cel:</span>
+                              <span className="text-muted-foreground">{t("common", "goal")}</span>
                               <p className="font-medium">
-                                {goalLabels[preset.goal]}
+                                {t("goalLabels", preset.goal)}
                               </p>
                             </div>
                           )}
@@ -142,7 +139,7 @@ const ConfigType = () => {
                           className="w-full"
                           onClick={() => handlePresetSelect(preset.id)}
                         >
-                          Użyj tej konfiguracji
+                          {t("configType", "useThisConfig")}
                         </Button>
                       </CardContent>
                     </Card>
@@ -153,7 +150,7 @@ const ConfigType = () => {
               <Card className="border-dashed">
                 <CardContent className="py-12 text-center">
                   <p className="text-muted-foreground">
-                    Brak dostępnych presetów dla wybranych ofert
+                    {t("configType", "noPresetsAvailable")}
                   </p>
                 </CardContent>
               </Card>
@@ -164,26 +161,26 @@ const ConfigType = () => {
             <div className="flex items-center gap-2 mb-4">
               <Settings className="w-5 h-5 text-accent" />
               <h2 className="text-xl font-heading font-semibold">
-                Własna konfiguracja
+                {t("configType", "customConfig")}
               </h2>
             </div>
             <p className="text-muted-foreground mb-6">
-              Dostosuj trening do siebie
+              {t("configType", "customConfigSubtitle")}
             </p>
 
             <Card className="border-accent/30 shadow-custom-md">
               <CardHeader>
                 <CardTitle className="text-lg">
-                  Stwórz konfigurację od podstaw
+                  {t("configType", "createFromScratch")}
                 </CardTitle>
                 <CardDescription>
-                  Sam wybierz typ klienta i poziom trudności dla wybranych ofert
+                  {t("configType", "createFromScratchDescription")}
                 </CardDescription>
               </CardHeader>
               <CardContent>
                 <div className="space-y-4">
                   <div className="p-4 bg-secondary/50 rounded-lg">
-                    <p className="text-sm font-medium mb-2">Wybrane oferty:</p>
+                    <p className="text-sm font-medium mb-2">{t("configType", "selectedOffers")}</p>
                     <div className="space-y-1">
                       {config.selectedOffers.map((offerId) => {
                         const offer = mockOffers.find((o) => o.id === offerId);
@@ -201,7 +198,7 @@ const ConfigType = () => {
                     size="lg"
                     onClick={() => navigate("/config")}
                   >
-                    Stwórz własną konfigurację
+                    {t("configType", "createOwnConfig")}
                   </Button>
                 </div>
               </CardContent>

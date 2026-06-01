@@ -11,10 +11,12 @@ import { Badge } from "@/components/ui/badge";
 import { mockOffers } from "@/data/mockData";
 import { storage } from "@/lib/storage";
 import { ArrowLeft, ArrowRight, ExternalLink, FileText } from "lucide-react";
+import { useLanguage } from "@/i18n/LanguageContext";
 
 const OfferSummary = () => {
   const navigate = useNavigate();
   const config = storage.getCurrentConfig();
+  const { t } = useLanguage();
 
   if (!config?.selectedOffers || config.selectedOffers.length === 0) {
     navigate("/offers");
@@ -36,7 +38,7 @@ const OfferSummary = () => {
             className="gap-2"
           >
             <ArrowLeft className="w-4 h-4" />
-            Zmień wybrane oferty
+            {t("offerSummary", "changeOffers")}
           </Button>
         </div>
       </header>
@@ -44,11 +46,10 @@ const OfferSummary = () => {
       <main className="container mx-auto px-4 py-8 max-w-4xl">
         <div className="mb-8">
           <h1 className="text-3xl font-heading font-bold mb-3">
-            Podsumowanie wybranych ofert
+            {t("offerSummary", "title")}
           </h1>
           <p className="text-muted-foreground text-lg">
-            To materiały, na których opieramy rozmowę i insighty. Przejrzyj je
-            przed treningiem.
+            {t("offerSummary", "subtitle")}
           </p>
         </div>
 
@@ -79,7 +80,7 @@ const OfferSummary = () => {
                 <CardContent>
                   <h4 className="font-semibold mb-3 flex items-center gap-2">
                     <FileText className="w-4 h-4 text-primary" />
-                    Materiały do przejrzenia
+                    {t("offerSummary", "materialsToReview")}
                   </h4>
                   <div className="space-y-2">
                     {offer.materials.map((material) => (
@@ -107,7 +108,7 @@ const OfferSummary = () => {
             onClick={() => navigate("/config-type")}
             className="gap-2"
           >
-            Przejdź do konfiguracji treningu
+            {t("offerSummary", "proceedToConfig")}
             <ArrowRight className="w-4 h-4" />
           </Button>
         </div>

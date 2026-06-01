@@ -15,12 +15,14 @@ import { UserRole } from "@/types";
 import { mockUsers } from "@/data/mockData";
 import { storage } from "@/lib/storage";
 import { Sparkles, Info } from "lucide-react";
+import { useLanguage } from "@/i18n/LanguageContext";
 
 const Login = () => {
   const navigate = useNavigate();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [role, setRole] = useState<UserRole>("sales-rep");
+  const { t } = useLanguage();
 
   const handleLogin = (e: React.FormEvent) => {
     e.preventDefault();
@@ -43,9 +45,9 @@ const Login = () => {
           <div className="mx-auto w-16 h-16 bg-gradient-primary rounded-2xl flex items-center justify-center shadow-custom-md">
             <Sparkles className="w-8 h-8 text-primary-foreground" />
           </div>
-          <CardTitle className="text-3xl font-heading">SalesTwin</CardTitle>
+          <CardTitle className="text-3xl font-heading">{t("login", "title")}</CardTitle>
           <CardDescription className="text-base">
-            Trenuj sprzedaż z AI-klientem
+            {t("login", "subtitle")}
           </CardDescription>
         </CardHeader>
         <CardContent>
@@ -53,21 +55,22 @@ const Login = () => {
           <div className="mb-6 p-4 bg-blue-50 dark:bg-blue-950/30 border border-blue-200 dark:border-blue-800 rounded-lg flex items-start gap-3">
             <Info className="w-5 h-5 text-blue-600 dark:text-blue-400 flex-shrink-0 mt-0.5" />
             <div className="text-sm text-blue-900 dark:text-blue-100">
-              <p className="font-medium mb-1">Demo Application</p>
-              <p className="text-blue-700 dark:text-blue-300">
-                You can log in using <strong>any email and password combination</strong>. Just select your role below and click "Zaloguj się".
-              </p>
+              <p className="font-medium mb-1">{t("login", "demoTitle")}</p>
+              <p 
+                className="text-blue-700 dark:text-blue-300"
+                dangerouslySetInnerHTML={{ __html: t("login", "demoDescription") }}
+              />
             </div>
           </div>
 
           <form onSubmit={handleLogin} className="space-y-6">
             <div className="space-y-4">
               <div className="space-y-2">
-                <Label htmlFor="email">Email</Label>
+                <Label htmlFor="email">{t("common", "email")}</Label>
                 <Input
                   id="email"
                   type="email"
-                  placeholder="twoj@email.com"
+                  placeholder={t("login", "emailPlaceholder")}
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                   required
@@ -75,11 +78,11 @@ const Login = () => {
               </div>
 
               <div className="space-y-2">
-                <Label htmlFor="password">Hasło</Label>
+                <Label htmlFor="password">{t("common", "password")}</Label>
                 <Input
                   id="password"
                   type="password"
-                  placeholder="••••••••"
+                  placeholder={t("login", "passwordPlaceholder")}
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
                   required
@@ -88,19 +91,19 @@ const Login = () => {
 
               <div className="pt-2">
                 <Label className="text-base mb-3 block">
-                  Zaloguj jako (demo):
+                  {t("login", "roleLabel")}
                 </Label>
                 <RadioGroup value={role} onValueChange={(v) => setRole(v as UserRole)}>
                   <div className="flex items-center space-x-2 p-3 rounded-lg border border-border hover:bg-secondary/50 transition-colors">
                     <RadioGroupItem value="sales-rep" id="sales-rep" />
                     <Label htmlFor="sales-rep" className="cursor-pointer flex-1">
-                      Handlowiec
+                      {t("login", "roleSalesRep")}
                     </Label>
                   </div>
                   <div className="flex items-center space-x-2 p-3 rounded-lg border border-border hover:bg-secondary/50 transition-colors">
                     <RadioGroupItem value="manager" id="manager" />
                     <Label htmlFor="manager" className="cursor-pointer flex-1">
-                      Manager / Trener
+                      {t("login", "roleManager")}
                     </Label>
                   </div>
                 </RadioGroup>
@@ -108,7 +111,7 @@ const Login = () => {
             </div>
 
             <Button type="submit" className="w-full h-11 text-base font-medium">
-              Zaloguj się
+              {t("login", "loginButton")}
             </Button>
 
             <div className="text-center">
@@ -116,7 +119,7 @@ const Login = () => {
                 type="button"
                 className="text-sm text-muted-foreground hover:text-primary transition-colors"
               >
-                Nie pamiętasz hasła?
+                {t("login", "forgotPassword")}
               </button>
             </div>
           </form>

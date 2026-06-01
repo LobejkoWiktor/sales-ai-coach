@@ -7,9 +7,12 @@ import {
 } from "@/components/ui/card";
 import { mockSessions, mockOffers } from "@/data/mockData";
 import { TrendingUp, Users, Target } from "lucide-react";
+import { useLanguage } from "@/i18n/LanguageContext";
 
 const AnalyticsTab = () => {
   const totalSessions = mockSessions.length;
+  const { t } = useLanguage();
+
   const avgScore = Math.round(
     mockSessions.reduce((acc, s) => acc + s.score, 0) / totalSessions
   );
@@ -34,7 +37,7 @@ const AnalyticsTab = () => {
           offerSessions.length
       );
       return {
-        name: offer?.name || "Nieznana oferta",
+        name: offer?.name || t("analyticsTab", "unknownOffer"),
         count,
         avgScore: avgOfferScore,
       };
@@ -44,10 +47,10 @@ const AnalyticsTab = () => {
     <div className="space-y-6">
       <div>
         <h2 className="text-2xl font-heading font-bold mb-1">
-          Analityka (podstawowa)
+          {t("analyticsTab", "title")}
         </h2>
         <p className="text-muted-foreground">
-          Ogólne statystyki treningów w ostatnich dniach
+          {t("analyticsTab", "subtitle")}
         </p>
       </div>
 
@@ -57,7 +60,7 @@ const AnalyticsTab = () => {
             <div className="flex items-center gap-2">
               <Users className="w-5 h-5 text-primary" />
               <CardTitle className="text-sm font-semibold text-muted-foreground">
-                Treningi (ostatnie 7 dni)
+                {t("analyticsTab", "trainingsLast7Days")}
               </CardTitle>
             </div>
           </CardHeader>
@@ -71,7 +74,7 @@ const AnalyticsTab = () => {
             <div className="flex items-center gap-2">
               <TrendingUp className="w-5 h-5 text-success" />
               <CardTitle className="text-sm font-semibold text-muted-foreground">
-                Średni wynik
+                {t("analyticsTab", "averageScore")}
               </CardTitle>
             </div>
           </CardHeader>
@@ -85,7 +88,7 @@ const AnalyticsTab = () => {
             <div className="flex items-center gap-2">
               <Target className="w-5 h-5 text-accent" />
               <CardTitle className="text-sm font-semibold text-muted-foreground">
-                Aktywne oferty
+                {t("analyticsTab", "activeOffers")}
               </CardTitle>
             </div>
           </CardHeader>
@@ -100,10 +103,10 @@ const AnalyticsTab = () => {
       <Card className="shadow-custom-md">
         <CardHeader>
           <CardTitle className="text-xl font-heading">
-            Top 5 najczęściej trenowanych ofert
+            {t("analyticsTab", "topOffersTitle")}
           </CardTitle>
           <CardDescription>
-            Które produkty są najczęściej ćwiczone przez handlowców
+            {t("analyticsTab", "topOffersDesc")}
           </CardDescription>
         </CardHeader>
         <CardContent>
@@ -120,13 +123,13 @@ const AnalyticsTab = () => {
                   <div>
                     <p className="font-semibold">{offer.name}</p>
                     <p className="text-sm text-muted-foreground">
-                      {offer.count} treningów
+                      {offer.count} {t("analyticsTab", "trainings")}
                     </p>
                   </div>
                 </div>
                 <div className="text-right">
                   <p className="text-2xl font-bold">{offer.avgScore}%</p>
-                  <p className="text-xs text-muted-foreground">Średni wynik</p>
+                  <p className="text-xs text-muted-foreground">{t("analyticsTab", "avgScore")}</p>
                 </div>
               </div>
             ))}

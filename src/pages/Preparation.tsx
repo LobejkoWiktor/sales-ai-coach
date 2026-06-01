@@ -21,11 +21,13 @@ import {
 } from "@/data/mockData";
 import { ArrowLeft, Play, Target, User, TrendingUp } from "lucide-react";
 import { toast } from "sonner";
+import { useLanguage } from "@/i18n/LanguageContext";
 
 const Preparation = () => {
   const navigate = useNavigate();
   const [isLoading, setIsLoading] = useState(false);
   const config = storage.getCurrentConfig();
+  const { language, t } = useLanguage();
 
   if (!config) {
     navigate("/offers");
@@ -93,13 +95,17 @@ const Preparation = () => {
       // try {
       //   const response = await createChatSession(payload);
       //   console.log("Chat session created successfully:", response);
-
+      // 
       //   // Store the session response for use in the conversation
       //   storage.setCurrentSession(response);
       // } catch (error) {
       //   console.error("Failed to create chat session:", error);
       //   // We continue anyway as the conversation can still proceed locally
-      //   toast.error("Nie udało się zapisać sesji, ale możesz kontynuować trening");
+      //   toast.error(
+      //     language === "pl"
+      //       ? "Nie udało się zapisać sesji, ale możesz kontynuować trening"
+      //       : "Failed to save session, but you can continue training"
+      //   );
       // }
 
       // Demo mode: Skip API call and proceed directly
@@ -108,7 +114,11 @@ const Preparation = () => {
       navigate("/conversation");
     } catch (error) {
       console.error("Error starting conversation:", error);
-      toast.error("Wystąpił błąd podczas rozpoczynania rozmowy");
+      toast.error(
+        language === "pl"
+          ? "Wystąpił błąd podczas rozpoczynania rozmowy"
+          : "An error occurred while starting the conversation"
+      );
     } finally {
       setIsLoading(false);
     }
@@ -125,7 +135,7 @@ const Preparation = () => {
             className="gap-2"
           >
             <ArrowLeft className="w-4 h-4" />
-            Powrót
+            {t("common", "back")}
           </Button>
         </div>
       </header>
@@ -133,10 +143,10 @@ const Preparation = () => {
       <main className="container mx-auto px-4 py-8 max-w-4xl">
         <div className="mb-8">
           <h1 className="text-3xl font-heading font-bold mb-3">
-            Przygotowanie do treningu
+            {t("preparation", "title")}
           </h1>
           <p className="text-muted-foreground text-lg">
-            Zapoznaj się z profilem klienta i przygotuj się mentalnie
+            {t("preparation", "subtitle")}
           </p>
         </div>
 
@@ -146,16 +156,16 @@ const Preparation = () => {
               <div className="flex items-center gap-2">
                 <User className="w-5 h-5 text-primary" />
                 <CardTitle className="text-xl font-heading">
-                  Twój klient
+                  {t("preparation", "yourClient")}
                 </CardTitle>
               </div>
               <CardDescription className="text-base">
-                {clientTypeLabels[config.clientType]}
+                {t("clientTypeLabels", config.clientType)}
               </CardDescription>
             </CardHeader>
             <CardContent>
               <p className="text-foreground leading-relaxed">
-                {clientTypeDescriptions[config.clientType]}
+                {t("clientTypeDescriptions", config.clientType)}
               </p>
             </CardContent>
           </Card>
@@ -165,7 +175,7 @@ const Preparation = () => {
               <div className="flex items-center gap-2">
                 <Target className="w-5 h-5 text-accent" />
                 <CardTitle className="text-xl font-heading">
-                  W tym treningu sprzedajesz
+                  {t("preparation", "youAreSelling")}
                 </CardTitle>
               </div>
             </CardHeader>
@@ -196,21 +206,21 @@ const Preparation = () => {
               <div className="flex items-center gap-2">
                 <TrendingUp className="w-5 h-5 text-success" />
                 <CardTitle className="text-xl font-heading">
-                  Poziom trudności
+                  {t("preparation", "difficultyLevel")}
                 </CardTitle>
               </div>
               <CardDescription className="text-base">
-                {difficultyLabels[config.difficulty]}
+                {t("difficultyLabels", config.difficulty)}
               </CardDescription>
             </CardHeader>
             <CardContent>
               <p className="text-foreground leading-relaxed">
-                {difficultyDescriptions[config.difficulty]}
+                {t("difficultyDescriptions", config.difficulty)}
               </p>
               {config.goal && (
                 <div className="mt-4 p-3 bg-accent/10 border border-accent/20 rounded-lg">
                   <p className="text-sm font-medium text-accent-foreground">
-                    <strong>Cel rozmowy:</strong> {goalLabels[config.goal]}
+                    <strong>{t("preparation", "goalLabel")}</strong> {t("goalLabels", config.goal)}
                   </p>
                 </div>
               )}
@@ -222,12 +232,12 @@ const Preparation = () => {
               <div className="flex items-center justify-between">
                 <div>
                   <p className="text-sm text-muted-foreground mb-1">
-                    Źródło konfiguracji
+                    {t("preparation", "configSource")}
                   </p>
                   <Badge variant="outline">
                     {config.isPreset
-                      ? `Preset managera: ${config.presetName}`
-                      : "Konfiguracja własna"}
+                      ? `${t("preparation", "presetLabel")} ${config.presetName}`
+                      : t("common", "ownConfigBadge")}
                   </Badge>
                 </div>
               </div>
@@ -247,7 +257,7 @@ const Preparation = () => {
             ) : (
               <Play className="w-5 h-5" />
             )}
-            {isLoading ? "Rozpoczynanie..." : "Rozpocznij rozmowę"}
+            {isLoading ? t("preparation", "starting") : t("preparation", "startConversation")}
           </Button>
         </div>
       </main>

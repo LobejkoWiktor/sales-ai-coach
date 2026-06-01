@@ -26,10 +26,12 @@ import {
 } from "@/data/mockData";
 import { ClientType, DifficultyLevel, ConversationGoal } from "@/types";
 import { ArrowLeft, ArrowRight } from "lucide-react";
+import { useLanguage } from "@/i18n/LanguageContext";
 
 const TrainingConfig = () => {
   const navigate = useNavigate();
   const config = storage.getCurrentConfig();
+  const { t } = useLanguage();
 
   if (!config?.selectedOffers || config.selectedOffers.length === 0) {
     navigate("/offers");
@@ -70,7 +72,7 @@ const TrainingConfig = () => {
             className="gap-2"
           >
             <ArrowLeft className="w-4 h-4" />
-            Powrót
+            {t("common", "back")}
           </Button>
         </div>
       </header>
@@ -78,19 +80,19 @@ const TrainingConfig = () => {
       <main className="container mx-auto px-4 py-8 max-w-3xl">
         <div className="mb-8">
           <h1 className="text-3xl font-heading font-bold mb-3">
-            Twoja konfiguracja treningu
+            {t("trainingConfig", "title")}
           </h1>
           <p className="text-muted-foreground text-lg">
-            Dostosuj parametry rozmowy do swoich potrzeb
+            {t("trainingConfig", "subtitle")}
           </p>
         </div>
 
         <div className="space-y-6">
           <Card className="shadow-custom-md">
             <CardHeader>
-              <CardTitle className="text-lg">Wybrane oferty</CardTitle>
+              <CardTitle className="text-lg">{t("trainingConfig", "selectedOffers")}</CardTitle>
               <CardDescription>
-                Treningi będą oparte na tych produktach
+                {t("trainingConfig", "selectedOffersDesc")}
               </CardDescription>
             </CardHeader>
             <CardContent>
@@ -116,24 +118,24 @@ const TrainingConfig = () => {
 
           <Card className="shadow-custom-md">
             <CardHeader>
-              <CardTitle className="text-lg">Parametry treningu</CardTitle>
+              <CardTitle className="text-lg">{t("trainingConfig", "trainingParams")}</CardTitle>
               <CardDescription>
-                Wybierz typ klienta i poziom trudności
+                {t("trainingConfig", "trainingParamsDesc")}
               </CardDescription>
             </CardHeader>
             <CardContent className="space-y-6">
               <div className="space-y-3">
                 <Label htmlFor="client-type" className="text-base">
-                  Typ klienta
+                  {t("trainingConfig", "clientType")}
                 </Label>
                 <Select value={clientType} onValueChange={(v) => setClientType(v as ClientType)}>
                   <SelectTrigger id="client-type">
                     <SelectValue />
                   </SelectTrigger>
                   <SelectContent>
-                    {Object.entries(clientTypeLabels).map(([value, label]) => (
+                    {Object.keys(clientTypeLabels).map((value) => (
                       <SelectItem key={value} value={value}>
-                        {label}
+                        {t("clientTypeLabels", value)}
                       </SelectItem>
                     ))}
                   </SelectContent>
@@ -142,16 +144,16 @@ const TrainingConfig = () => {
 
               <div className="space-y-3">
                 <Label htmlFor="difficulty" className="text-base">
-                  Poziom trudności rozmowy
+                  {t("trainingConfig", "difficultyLevel")}
                 </Label>
                 <Select value={difficulty} onValueChange={(v) => setDifficulty(v as DifficultyLevel)}>
                   <SelectTrigger id="difficulty">
                     <SelectValue />
                   </SelectTrigger>
                   <SelectContent>
-                    {Object.entries(difficultyLabels).map(([value, label]) => (
+                    {Object.keys(difficultyLabels).map((value) => (
                       <SelectItem key={value} value={value}>
-                        {label}
+                        {t("difficultyLabels", value)}
                       </SelectItem>
                     ))}
                   </SelectContent>
@@ -160,17 +162,17 @@ const TrainingConfig = () => {
 
               <div className="space-y-3">
                 <Label htmlFor="goal" className="text-base">
-                  Cel rozmowy (opcjonalnie)
+                  {t("trainingConfig", "goalOptional")}
                 </Label>
                 <Select value={goal || "none"} onValueChange={(v) => setGoal(v === "none" ? undefined : v as ConversationGoal)}>
                   <SelectTrigger id="goal">
-                    <SelectValue placeholder="Wybierz cel..." />
+                    <SelectValue placeholder={t("trainingConfig", "selectGoal")} />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="none">Brak celu</SelectItem>
-                    {Object.entries(goalLabels).map(([value, label]) => (
+                    <SelectItem value="none">{t("trainingConfig", "noGoal")}</SelectItem>
+                    {Object.keys(goalLabels).map((value) => (
                       <SelectItem key={value} value={value}>
-                        {label}
+                        {t("goalLabels", value)}
                       </SelectItem>
                     ))}
                   </SelectContent>
@@ -182,39 +184,39 @@ const TrainingConfig = () => {
           <Card className="bg-secondary/30 border-primary/20">
             <CardHeader>
               <CardTitle className="text-lg flex items-center gap-2">
-                Podsumowanie konfiguracji
+                {t("trainingConfig", "configSummary")}
               </CardTitle>
             </CardHeader>
             <CardContent className="space-y-2">
               <div className="flex justify-between text-sm">
-                <span className="text-muted-foreground">Klient:</span>
-                <span className="font-medium">{clientTypeLabels[clientType]}</span>
+                <span className="text-muted-foreground">{t("common", "client")}</span>
+                <span className="font-medium">{t("clientTypeLabels", clientType)}</span>
               </div>
               <div className="flex justify-between text-sm">
-                <span className="text-muted-foreground">Poziom trudności:</span>
-                <span className="font-medium">{difficultyLabels[difficulty]}</span>
+                <span className="text-muted-foreground">{t("common", "difficulty")}</span>
+                <span className="font-medium">{t("difficultyLabels", difficulty)}</span>
               </div>
               {goal && (
                 <div className="flex justify-between text-sm">
-                  <span className="text-muted-foreground">Cel:</span>
-                  <span className="font-medium">{goalLabels[goal]}</span>
+                  <span className="text-muted-foreground">{t("common", "goal")}</span>
+                  <span className="font-medium">{t("goalLabels", goal)}</span>
                 </div>
               )}
               <div className="flex justify-between text-sm">
-                <span className="text-muted-foreground">Produkty:</span>
+                <span className="text-muted-foreground">{t("trainingConfig", "products")}</span>
                 <span className="font-medium">
-                  {selectedOffers.length} wybrane
+                  {selectedOffers.length} {t("trainingConfig", "selected")}
                 </span>
               </div>
               <div className="pt-2">
-                <Badge variant="outline">Konfiguracja własna</Badge>
+                <Badge variant="outline">{t("common", "ownConfigBadge")}</Badge>
               </div>
             </CardContent>
           </Card>
 
           <div className="flex justify-end gap-3">
             <Button size="lg" onClick={handleContinue} className="gap-2">
-              Przejdź do przygotowania rozmowy
+              {t("trainingConfig", "proceedToPreparation")}
               <ArrowRight className="w-4 h-4" />
             </Button>
           </div>

@@ -10,18 +10,15 @@ import {
 import { Badge } from "@/components/ui/badge";
 import { storage } from "@/lib/storage";
 import { mockSessions } from "@/data/mockData";
-import {
-  clientTypeLabels,
-  difficultyLabels,
-  goalLabels,
-} from "@/data/mockData";
 import { Play, Plus, TrendingUp, Calendar } from "lucide-react";
+import { useLanguage } from "@/i18n/LanguageContext";
 
 const Dashboard = () => {
   const navigate = useNavigate();
   const user = storage.getCurrentUser();
   const lastSession = storage.getLastSession();
   const recentSessions = mockSessions.slice(-3).reverse();
+  const { language, t } = useLanguage();
 
   return (
     <div className="min-h-screen bg-background">
@@ -30,7 +27,7 @@ const Dashboard = () => {
           <div className="flex items-center justify-between">
             <h1 className="text-2xl font-heading font-bold">SalesTwin</h1>
             <Button variant="outline" size="sm" onClick={() => navigate("/")}>
-              Wyloguj
+              {t("common", "logout")}
             </Button>
           </div>
         </div>
@@ -39,18 +36,18 @@ const Dashboard = () => {
       <main className="container mx-auto px-4 py-8 space-y-8">
         <div>
           <h2 className="text-3xl font-heading font-bold mb-2">
-            Cześć, {user?.name || "Handlowiec"}! 👋
+            {t("dashboard", "greeting").replace("{name}", user?.name || t("dashboard", "greetingFallback"))}
           </h2>
           <p className="text-muted-foreground">
-            Gotowy na dzisiejszy trening?
+            {t("dashboard", "readyToTrain")}
           </p>
         </div>
 
         <Card className="shadow-custom-md border-primary/20">
           <CardHeader>
-            <CardTitle className="text-2xl font-heading">Szybki start</CardTitle>
+            <CardTitle className="text-2xl font-heading">{t("dashboard", "quickStart")}</CardTitle>
             <CardDescription>
-              Rozpocznij nowy trening lub kontynuuj ostatni
+              {t("dashboard", "quickStartDescription")}
             </CardDescription>
           </CardHeader>
           <CardContent className="grid gap-4 sm:grid-cols-2">
@@ -67,12 +64,12 @@ const Dashboard = () => {
                 <div className="flex items-center gap-2 text-primary">
                   <Play className="w-5 h-5" />
                   <span className="font-semibold text-base">
-                    Kontynuuj ostatni trening
+                    {t("dashboard", "continueLastTraining")}
                   </span>
                 </div>
                 <span className="text-sm text-muted-foreground text-left">
-                  {clientTypeLabels[lastSession.config.clientType]} •{" "}
-                  {difficultyLabels[lastSession.config.difficulty]}
+                  {t("clientTypeLabels", lastSession.config.clientType)} •{" "}
+                  {t("difficultyLabels", lastSession.config.difficulty)}
                 </span>
               </Button>
             )}
@@ -84,10 +81,10 @@ const Dashboard = () => {
             >
               <div className="flex items-center gap-2">
                 <Plus className="w-5 h-5" />
-                <span className="font-semibold text-base">Nowy trening</span>
+                <span className="font-semibold text-base">{t("dashboard", "newTraining")}</span>
               </div>
               <span className="text-sm text-primary-foreground/90">
-                Wybierz oferty i rozpocznij
+                {t("dashboard", "selectOffersAndStart")}
               </span>
             </Button>
           </CardContent>
@@ -97,7 +94,7 @@ const Dashboard = () => {
           <div className="flex items-center gap-2 mb-4">
             <TrendingUp className="w-5 h-5 text-primary" />
             <h3 className="text-xl font-heading font-semibold">
-              Ostatnie treningi
+              {t("dashboard", "recentTrainings")}
             </h3>
           </div>
 
@@ -113,7 +110,7 @@ const Dashboard = () => {
                     <CardTitle className="text-base font-semibold">
                       {session.config.isPreset && session.config.presetName
                         ? session.config.presetName
-                        : clientTypeLabels[session.config.clientType]}
+                        : t("clientTypeLabels", session.config.clientType)}
                     </CardTitle>
                     <Badge
                       variant={
@@ -130,32 +127,32 @@ const Dashboard = () => {
                   </div>
                   <div className="flex items-center gap-1 text-xs text-muted-foreground">
                     <Calendar className="w-3 h-3" />
-                    {new Date(session.date).toLocaleDateString("pl-PL")}
+                    {new Date(session.date).toLocaleDateString(language === "pl" ? "pl-PL" : "en-US")}
                   </div>
                 </CardHeader>
                 <CardContent className="space-y-2 text-sm">
                   <div className="flex justify-between">
-                    <span className="text-muted-foreground">Trudność:</span>
+                    <span className="text-muted-foreground">{t("common", "difficulty")}</span>
                     <span className="font-medium">
-                      {difficultyLabels[session.config.difficulty]}
+                      {t("difficultyLabels", session.config.difficulty)}
                     </span>
                   </div>
                   {session.config.goal && (
                     <div className="flex justify-between">
-                      <span className="text-muted-foreground">Cel:</span>
+                      <span className="text-muted-foreground">{t("common", "goal")}</span>
                       <span className="font-medium">
-                        {goalLabels[session.config.goal]}
+                        {t("goalLabels", session.config.goal)}
                       </span>
                     </div>
                   )}
                   <div className="pt-2 flex items-center gap-1 text-xs">
                     {session.config.isPreset ? (
                       <Badge variant="outline" className="text-xs">
-                        Preset managera
+                        {t("common", "presetManager")}
                       </Badge>
                     ) : (
                       <Badge variant="outline" className="text-xs">
-                        Własna konfiguracja
+                        {t("common", "ownConfigBadge")}
                       </Badge>
                     )}
                   </div>
@@ -168,10 +165,10 @@ const Dashboard = () => {
             <Card className="border-dashed">
               <CardContent className="py-12 text-center">
                 <p className="text-muted-foreground mb-4">
-                  Nie masz jeszcze żadnych treningów
+                  {t("dashboard", "noTrainingsYet")}
                 </p>
                 <Button onClick={() => navigate("/offers")}>
-                  Rozpocznij pierwszy trening
+                  {t("dashboard", "startFirstTraining")}
                 </Button>
               </CardContent>
             </Card>

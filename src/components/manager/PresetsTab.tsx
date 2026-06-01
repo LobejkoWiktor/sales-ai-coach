@@ -33,50 +33,52 @@ import {
   goalLabels,
 } from "@/data/mockData";
 import { Plus, Pencil, Trash2 } from "lucide-react";
+import { useLanguage } from "@/i18n/LanguageContext";
 
 const PresetsTab = () => {
   const [presets] = useState(mockPresets);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
+  const { language, t } = useLanguage();
 
   return (
     <div className="space-y-6">
       <div className="flex items-center justify-between">
         <div>
           <h2 className="text-2xl font-heading font-bold">
-            Konfiguracje treningu (Presety)
+            {t("presetsTab", "title")}
           </h2>
           <p className="text-muted-foreground">
-            Twórz rekomendowane ustawienia dla handlowców
+            {t("presetsTab", "subtitle")}
           </p>
         </div>
         <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
           <DialogTrigger asChild>
             <Button className="gap-2">
               <Plus className="w-4 h-4" />
-              Dodaj konfigurację
+              {t("presetsTab", "addConfig")}
             </Button>
           </DialogTrigger>
           <DialogContent className="max-w-2xl">
             <DialogHeader>
-              <DialogTitle>Nowa konfiguracja treningu</DialogTitle>
+              <DialogTitle>{t("presetsTab", "newConfig")}</DialogTitle>
               <DialogDescription>
-                Stwórz preset dla określonej oferty i typu klienta
+                {t("presetsTab", "newConfigDesc")}
               </DialogDescription>
             </DialogHeader>
             <div className="space-y-4 py-4">
               <div className="space-y-2">
-                <Label htmlFor="preset-name">Nazwa konfiguracji</Label>
+                <Label htmlFor="preset-name">{t("presetsTab", "configName")}</Label>
                 <Input
                   id="preset-name"
-                  placeholder="np. CFO – demo produktu X"
+                  placeholder={t("presetsTab", "configNamePlaceholder")}
                 />
               </div>
 
               <div className="space-y-2">
-                <Label htmlFor="preset-offer">Powiązana oferta</Label>
+                <Label htmlFor="preset-offer">{t("presetsTab", "linkedOffer")}</Label>
                 <Select>
                   <SelectTrigger id="preset-offer">
-                    <SelectValue placeholder="Wybierz ofertę..." />
+                    <SelectValue placeholder={t("presetsTab", "selectOffer")} />
                   </SelectTrigger>
                   <SelectContent>
                     {mockOffers
@@ -92,15 +94,15 @@ const PresetsTab = () => {
 
               <div className="grid md:grid-cols-2 gap-4">
                 <div className="space-y-2">
-                  <Label htmlFor="preset-client">Typ klienta</Label>
+                  <Label htmlFor="preset-client">{t("presetsTab", "clientType")}</Label>
                   <Select>
                     <SelectTrigger id="preset-client">
-                      <SelectValue placeholder="Wybierz..." />
+                      <SelectValue placeholder={t("presetsTab", "select")} />
                     </SelectTrigger>
                     <SelectContent>
-                      {Object.entries(clientTypeLabels).map(([value, label]) => (
+                      {Object.keys(clientTypeLabels).map((value) => (
                         <SelectItem key={value} value={value}>
-                          {label}
+                          {t("clientTypeLabels", value)}
                         </SelectItem>
                       ))}
                     </SelectContent>
@@ -108,15 +110,15 @@ const PresetsTab = () => {
                 </div>
 
                 <div className="space-y-2">
-                  <Label htmlFor="preset-difficulty">Poziom trudności</Label>
+                  <Label htmlFor="preset-difficulty">{t("presetsTab", "difficultyLevel")}</Label>
                   <Select>
                     <SelectTrigger id="preset-difficulty">
-                      <SelectValue placeholder="Wybierz..." />
+                      <SelectValue placeholder={t("presetsTab", "select")} />
                     </SelectTrigger>
                     <SelectContent>
-                      {Object.entries(difficultyLabels).map(([value, label]) => (
+                      {Object.keys(difficultyLabels).map((value) => (
                         <SelectItem key={value} value={value}>
-                          {label}
+                          {t("difficultyLabels", value)}
                         </SelectItem>
                       ))}
                     </SelectContent>
@@ -125,16 +127,16 @@ const PresetsTab = () => {
               </div>
 
               <div className="space-y-2">
-                <Label htmlFor="preset-goal">Cel rozmowy (opcjonalnie)</Label>
+                <Label htmlFor="preset-goal">{t("presetsTab", "goalOptional")}</Label>
                 <Select>
                   <SelectTrigger id="preset-goal">
-                    <SelectValue placeholder="Wybierz cel..." />
+                    <SelectValue placeholder={t("presetsTab", "selectGoal")} />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="none">Brak celu</SelectItem>
-                    {Object.entries(goalLabels).map(([value, label]) => (
+                    <SelectItem value="none">{t("presetsTab", "noGoal")}</SelectItem>
+                    {Object.keys(goalLabels).map((value) => (
                       <SelectItem key={value} value={value}>
-                        {label}
+                        {t("goalLabels", value)}
                       </SelectItem>
                     ))}
                   </SelectContent>
@@ -143,11 +145,11 @@ const PresetsTab = () => {
 
               <div className="space-y-2">
                 <Label htmlFor="preset-description">
-                  Krótki opis - kiedy używać
+                  {t("presetsTab", "descriptionLabel")}
                 </Label>
                 <Textarea
                   id="preset-description"
-                  placeholder="Opisz, w jakich sytuacjach handlowiec powinien użyć tej konfiguracji"
+                  placeholder={t("presetsTab", "descriptionPlaceholder")}
                   rows={3}
                 />
               </div>
@@ -157,10 +159,10 @@ const PresetsTab = () => {
                 variant="outline"
                 onClick={() => setIsDialogOpen(false)}
               >
-                Anuluj
+                {t("common", "cancel")}
               </Button>
               <Button onClick={() => setIsDialogOpen(false)}>
-                Dodaj konfigurację
+                {t("presetsTab", "addConfig")}
               </Button>
             </div>
           </DialogContent>
@@ -179,14 +181,14 @@ const PresetsTab = () => {
                       <CardTitle className="text-xl font-heading">
                         {preset.name}
                       </CardTitle>
-                      <Badge variant="outline">Preset</Badge>
+                      <Badge variant="outline">{t("common", "preset")}</Badge>
                     </div>
                     <CardDescription className="text-base mb-3">
                       {preset.description}
                     </CardDescription>
                     <div className="text-sm space-y-1">
                       <p>
-                        <span className="text-muted-foreground">Oferta:</span>{" "}
+                        <span className="text-muted-foreground">{t("common", "offer")}</span>{" "}
                         <span className="font-medium">{offer?.name}</span>
                       </p>
                     </div>
@@ -205,34 +207,35 @@ const PresetsTab = () => {
               <CardContent className="grid md:grid-cols-3 gap-3">
                 <div className="p-3 bg-secondary/50 rounded-lg">
                   <span className="text-xs text-muted-foreground block mb-1">
-                    Typ klienta
+                    {t("presetsTab", "clientType")}
                   </span>
                   <span className="font-medium text-sm">
-                    {clientTypeLabels[preset.clientType]}
+                    {t("clientTypeLabels", preset.clientType)}
                   </span>
                 </div>
                 <div className="p-3 bg-secondary/50 rounded-lg">
                   <span className="text-xs text-muted-foreground block mb-1">
-                    Trudność
+                    {t("common", "difficulty").replace(":", "")}
                   </span>
                   <span className="font-medium text-sm">
-                    {difficultyLabels[preset.difficulty]}
+                    {t("difficultyLabels", preset.difficulty)}
                   </span>
                 </div>
                 {preset.goal && (
                   <div className="p-3 bg-secondary/50 rounded-lg">
                     <span className="text-xs text-muted-foreground block mb-1">
-                      Cel
+                      {t("common", "goal").replace(":", "")}
                     </span>
                     <span className="font-medium text-sm">
-                      {goalLabels[preset.goal]}
+                      {t("goalLabels", preset.goal)}
                     </span>
                   </div>
                 )}
               </CardContent>
 
               <CardContent className="text-xs text-muted-foreground border-t pt-3">
-                Utworzono: {new Date(preset.createdAt).toLocaleDateString("pl-PL")}
+                {t("presetsTab", "createdAt")}{" "}
+                {new Date(preset.createdAt).toLocaleDateString(language === "pl" ? "pl-PL" : "en-US")}
               </CardContent>
             </Card>
           );
